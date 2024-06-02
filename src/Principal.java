@@ -5,11 +5,32 @@ import br.univali.cc.prog3.visao.CaixaEletronicoGUI;
 public class Principal {
 
     public static void main(String[] args) throws Exception {
+
+        System.out.println("Olá, antes de iniciarmos o programa, escolha qual interface deseja utilizar: ");
+        System.out.println("1 - Interface gráfica");
+        System.out.println("2 - Interface de texto");
+        System.out.print("Digite a opção desejada: ");
+        int opcao = Integer.parseInt(System.console().readLine());
+
+        if (opcao == 1){
+            Banco banco = new Banco(1964, "BankVali");
+            CaixaEletronicoGUI caixa = new CaixaEletronicoGUI(banco);
+        }
+        else if (opcao == 2){
+            Banco banco = new Banco(1964, "BankVali");
+            CaixaEletronico caixa = new CaixaEletronico(banco);
+            caixa.menu();
+        }
+        else{
+            System.out.println("Opção inválida!");
+        }
+
+        /*
+
         Banco banco = new Banco(1964, "BankVali");
         CaixaEletronico caixa = new CaixaEletronico(banco);
         caixa.menu();
 
-        /*
         CaixaEletronicoGUI caixa = new CaixaEletronicoGUI(banco);
 
         Banco banco = new Banco(1, "Banco do Brasil");
