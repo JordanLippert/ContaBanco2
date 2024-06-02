@@ -27,26 +27,24 @@ public class Banco {
         contas.add(conta);
     }
 
-    public String depositar(int conta, double valor) throws ExceptionBanco, ExceptionConta {
+    public void depositar(int conta, double valor) throws ExceptionBanco, ExceptionConta {
         ContaCorrente contaCorrente = this.localizarConta(conta);
         if (contaCorrente != null) {
             contaCorrente.depositar(valor);
         }
         else {
-            throw new ExceptionBanco("Erro ao realizar depósito!");
+            throw new ExceptionBanco(ExceptionBanco.erroDeposito());
         }
-        return ExceptionBanco.erroDeposito();
     }
 
-    public String sacar(int conta, double valor) throws ExceptionBanco {
+    public void sacar(int conta, double valor) throws ExceptionBanco, ExceptionConta {
         ContaCorrente contaCorrente = this.localizarConta(conta);
         if (contaCorrente != null) {
             contaCorrente.sacar(valor);
         }
         else {
-            throw new ExceptionBanco("Erro ao realizar saque!");
+            throw new ExceptionBanco(ExceptionBanco.erroSaque());
         }
-        return ExceptionBanco.erroSaque();
     }
 
     public String emitirExtrato(int conta) throws ExceptionBanco {
@@ -55,12 +53,11 @@ public class Banco {
             return contaCorrente.emitirExtrato();
         }
         else {
-            throw new ExceptionBanco("Erro ao emitir extrato!");
+            throw new ExceptionBanco(ExceptionBanco.erroExtrato());
         }
-        return ExceptionBanco.erroExtrato();
     }
 
-    public String transferir(int contaOrigem, int contaDestino, double valor) throws ExceptionBanco, ExceptionConta {
+    public void transferir(int contaOrigem, int contaDestino, double valor) throws ExceptionBanco, ExceptionConta {
         ContaCorrente contaCorrenteOrigem = this.localizarConta(contaOrigem);
         ContaCorrente contaCorrenteDestino = this.localizarConta(contaDestino);
         if (contaCorrenteOrigem != null && contaCorrenteDestino != null){
@@ -69,25 +66,22 @@ public class Banco {
                 contaCorrenteDestino.depositar(valor);
             }
             else {
-                throw new ExceptionBanco("Erro ao realizar transferência!");
+                throw new ExceptionBanco(ExceptionBanco.erroSaldoInsuficiente());
             }
-            return ExceptionBanco.erroSaldoInsuficiente();
         }
         else {
-            throw new ExceptionBanco("Erro ao realizar transferência!");
+            throw new ExceptionBanco(ExceptionBanco.erroTransferencia());
         }
-        return ExceptionBanco.erroTransferencia();
     }
 
-    public String verSaldo(int conta) throws ExceptionBanco {
+    public Double verSaldo(int conta) throws ExceptionBanco {
         ContaCorrente contaCorrente = this.localizarConta(conta);
         if (contaCorrente != null) {
-            System.out.println("Saldo da conta " + conta + ": " + contaCorrente.getSaldo());
+            return contaCorrente.getSaldo();
         }
         else {
-            throw new ExceptionBanco("Erro ao verificar saldo!");
+            throw new ExceptionBanco(ExceptionBanco.erroSaldo());
         }
-        return ExceptionBanco.erroSaldo();
     }
 
     private ContaCorrente localizarConta(int numeroConta) {

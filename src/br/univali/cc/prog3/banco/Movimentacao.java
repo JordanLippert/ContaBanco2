@@ -15,5 +15,4 @@ public class Movimentacao {
     public String getMovimentacao(){
         return this.descricao+" ("+this.tipo+") R$ "+this.valor;
     }
-
 }

@@ -2,6 +2,10 @@ package exception;
 
 public class ExceptionBanco extends Exception{
 
+    public ExceptionBanco(String message){
+        super(message);
+    }
+
     public static String erroDeposito(){
         return "Conta não encontrada";
     }

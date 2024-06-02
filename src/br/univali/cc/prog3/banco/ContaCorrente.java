@@ -20,7 +20,6 @@ public class ContaCorrente {
         this.limite = 0;
         this.movimentacoes = new ArrayList<>();
         criarMovimentacao("Saldo inicial", 'C', this.saldo);
-//        this.movimentacoes.add(new Movimentacao("Saldo inicial", 'C', this.saldo));
     }
 
     public ContaCorrente(int numero, double saldoInicial, double limite){
@@ -30,7 +29,6 @@ public class ContaCorrente {
         this.especial = true;
         this.movimentacoes = new ArrayList<>();
         criarMovimentacao("Saldo inicial", 'C', this.saldo);
-//        this.movimentacoes.add(new Movimentacao("Saldo inicial", 'C', this.saldo));
     }
 
     public int getNumeroConta(){
@@ -41,19 +39,18 @@ public class ContaCorrente {
         return saldo;
     }
 
-    protected String depositar(double valor) throws ExceptionConta{
+    protected void depositar(double valor) throws ExceptionConta{
         if (valor > 0){
             this.saldo += valor;
 
             criarMovimentacao("Depósito", 'D', valor);
         }
         else{
-            throw new ExceptionConta("Erro ao realizar o depósito!");
+            throw new ExceptionConta(ExceptionConta.erroDeposito());
         }
-        return ExceptionConta.erroDeposito();
     }
 
-    protected String sacar(double valor){
+    protected void sacar(double valor) throws ExceptionConta {
         double saldoDisponivel = this.saldo;
         if (this.especial){
             saldoDisponivel += this.limite;
@@ -63,17 +60,16 @@ public class ContaCorrente {
             criarMovimentacao("Saque", 'S', valor);
         }
         else{
-            throw new ExceptionConta("Erro ao realizar o saque!");
+            throw new ExceptionConta(ExceptionConta.erroSaque());
         }
-        return ExceptionConta.erroSaque();
     }
 
     public String emitirExtrato(){
-        String extrato = "Extrato da conta " + this.numero + "\n";
+        StringBuilder extrato = new StringBuilder("Extrato da conta: " + this.numero + "\n");
         for (Movimentacao movimentacao : this.movimentacoes){
-            extrato += movimentacao.getMovimentacao() + "\n";
+            extrato.append(movimentacao.getMovimentacao()).append("\n");
         }
-        return extrato;
+        return extrato.toString();
     }
 
     private void criarMovimentacao(String descricao, char tipo, double valor){
