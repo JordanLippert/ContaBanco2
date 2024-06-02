@@ -41,20 +41,19 @@ public class ContaCorrente {
         return saldo;
     }
 
-    protected boolean depositar(double valor){
+    protected String depositar(double valor) throws ExceptionConta{
         if (valor > 0){
             this.saldo += valor;
 
             criarMovimentacao("Depósito", 'D', valor);
-            return true;
         }
         else{
-            throw new ExceptionConta("Valor de depósito não é válido!");
-            return false;
+            throw new ExceptionConta("Erro ao realizar o depósito!");
         }
+        return ExceptionConta.erroDeposito();
     }
 
-    protected boolean sacar(double valor){
+    protected String sacar(double valor){
         double saldoDisponivel = this.saldo;
         if (this.especial){
             saldoDisponivel += this.limite;
@@ -62,12 +61,11 @@ public class ContaCorrente {
         if (saldoDisponivel >= valor){
             this.saldo -= valor;
             criarMovimentacao("Saque", 'S', valor);
-            return true;
         }
         else{
-            throw new ExceptionConta("Saldo insuficiente para saque!");
-            return false;
+            throw new ExceptionConta("Erro ao realizar o saque!");
         }
+        return ExceptionConta.erroSaque();
     }
 
     public String emitirExtrato(){

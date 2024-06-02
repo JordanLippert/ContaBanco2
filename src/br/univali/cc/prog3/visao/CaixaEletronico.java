@@ -1,6 +1,8 @@
 package br.univali.cc.prog3.visao;
 
 import br.univali.cc.prog3.banco.Banco;
+import exception.ExceptionBanco;
+
 import java.util.Scanner;
 
 
@@ -27,8 +29,9 @@ public class CaixaEletronico {
             System.out.println(" 1. Criar Conta corrente");
             System.out.println(" 2. Depositar");
             System.out.println(" 3. Sacar");
-            System.out.println(" 4. Sacar");
+            System.out.println(" 4. Transferência");
             System.out.println(" 5. Emitir extrato");
+            System.out.println(" 6. Ver Saldo");
             System.out.println(" s. Sair");
             opcao = this.lerValor("Digite uma opção do menu: ").charAt(0);
 
@@ -38,6 +41,7 @@ public class CaixaEletronico {
                 case '3': this.sacar(); break;
                 case '4': this.transferencia();break;
                 case '5': this.emitirExtrato();break;
+                case '6': this.verSaldo();break;
             }
 
         } while (opcao != 's');
@@ -66,13 +70,13 @@ public class CaixaEletronico {
         }
     }
 
-    private void depositar() {
+    private void depositar() throws ExceptionBanco {
         int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
         double valor = Double.parseDouble(lerValor("Digite o valor a ser depositado: "));
         this.banco.depositar(numero, valor);
     }
 
-    private void sacar() {
+    private void sacar() throws ExceptionBanco {
         int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
         double valor = Double.parseDouble(lerValor("Digite o valor a ser sacado: "));
         this.banco.sacar(numero, valor);
@@ -85,8 +89,13 @@ public class CaixaEletronico {
         this.banco.transferir(origem, destino, valor);
     }
 
-    private void emitirExtrato() {
+    private void emitirExtrato() throws ExceptionBanco {
         int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
         System.out.println(this.banco.emitirExtrato(numero));
+    }
+
+    private void verSaldo() throws ExceptionBanco {
+        int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
+        System.out.println(this.banco.verSaldo(numero));
     }
 }
