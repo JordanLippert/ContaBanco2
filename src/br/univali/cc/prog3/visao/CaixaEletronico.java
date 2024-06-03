@@ -5,20 +5,18 @@ import exception.ExceptionBanco;
 import exception.ExceptionCaixaEletronico;
 import exception.ExceptionConta;
 
-
 import java.util.Scanner;
-
 
 public class CaixaEletronico {
 
-    Banco banco;
+    private Banco banco;
 
     public CaixaEletronico(Banco banco) {
         this.banco = banco;
     }
 
     private String lerValor(String rotulo) {
-        System.out.print(rotulo+": ");
+        System.out.print(rotulo + ": ");
         Scanner leitor = new Scanner(System.in);
         return leitor.nextLine();
     }
@@ -26,16 +24,16 @@ public class CaixaEletronico {
     public void menu() throws Exception {
         char opcao;
         do {
-            System.out.println(" Caixa Eletronico do banco "+banco.getNome());
-            System.out.println("\tAgencia: "+banco.getNumero());
-            System.out.println(" Menu de opções");
-            System.out.println(" 1. Criar Conta corrente");
-            System.out.println(" 2. Depositar");
-            System.out.println(" 3. Sacar");
-            System.out.println(" 4. Transferência");
-            System.out.println(" 5. Emitir extrato");
-            System.out.println(" 6. Ver Saldo");
-            System.out.println(" s. Sair");
+            System.out.println("Caixa Eletronico do banco " + banco.getNome());
+            System.out.println("\tAgencia: " + banco.getNumero());
+            System.out.println("Menu de opções");
+            System.out.println("1. Criar Conta corrente");
+            System.out.println("2. Depositar");
+            System.out.println("3. Sacar");
+            System.out.println("4. Transferência");
+            System.out.println("5. Emitir extrato");
+            System.out.println("6. Ver Saldo");
+            System.out.println("s. Sair");
             opcao = this.lerValor("Digite uma opção do menu: ").charAt(0);
 
             switch(opcao) {
@@ -50,8 +48,8 @@ public class CaixaEletronico {
         } while (opcao != 's');
     }
 
-    private void criarConta() throws ExceptionCaixaEletronico {
-        boolean especial = lerValor("Que tipo de conta deseja criar ? [e]special / [n]ormal: ")
+    private void criarConta() throws ExceptionCaixaEletronico, ExceptionBanco {
+        boolean especial = lerValor("Que tipo de conta deseja criar? [e]special / [n]ormal: ")
                 .toLowerCase()
                 .charAt(0) == 'e';
 
@@ -59,17 +57,9 @@ public class CaixaEletronico {
 
         if (especial) {
             double limite = Double.parseDouble(lerValor("Digite o limite da conta: "));
-            try {
-                this.banco.criarConta(saldoInicial, limite);
-            } catch (ExceptionBanco e) {
-                throw new ExceptionCaixaEletronico("Erro ao criar conta especial: " + e.getMessage());
-            }
+            banco.criarConta(saldoInicial, limite);
         } else {
-            try {
-                this.banco.criarConta(saldoInicial);
-            } catch (ExceptionBanco e) {
-                throw new ExceptionCaixaEletronico("Erro ao criar conta normal: " + e.getMessage());
-            }
+            banco.criarConta(saldoInicial);
         }
     }
 
@@ -77,11 +67,9 @@ public class CaixaEletronico {
         try {
             int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
             double valor = Double.parseDouble(lerValor("Digite o valor a ser depositado: "));
-            this.banco.depositar(numero, valor);
-        } catch (ExceptionBanco e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar depósito: " + e.getMessage());
-        } catch (ExceptionConta e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar depósito: " + e.getMessage());
+            banco.depositar(numero, valor);
+        } catch (ExceptionBanco | ExceptionConta e) {
+            throw new ExceptionCaixaEletronico("Erro ao depositar: " + e.getMessage());
         }
     }
 
@@ -89,31 +77,28 @@ public class CaixaEletronico {
         try {
             int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
             double valor = Double.parseDouble(lerValor("Digite o valor a ser sacado: "));
-            this.banco.sacar(numero, valor);
-        } catch (ExceptionBanco e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar saque: " + e.getMessage());
-        } catch (ExceptionConta e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar saque: " + e.getMessage());
+            banco.sacar(numero, valor);
+        } catch (ExceptionBanco | ExceptionConta e) {
+            throw new ExceptionCaixaEletronico("Erro ao sacar: " + e.getMessage());
         }
     }
 
     private void transferencia() throws ExceptionCaixaEletronico {
         try {
-            int origem = Integer.parseInt(lerValor("Digite o numero da conta de origem: "));
-            int destino = Integer.parseInt(lerValor("Digite o numero da conta de destino: "));
+            int numeroOrigem = Integer.parseInt(lerValor("Digite o numero da conta origem: "));
+            int numeroDestino = Integer.parseInt(lerValor("Digite o numero da conta destino: "));
             double valor = Double.parseDouble(lerValor("Digite o valor a ser transferido: "));
-            this.banco.transferir(origem, destino, valor);
-        } catch (ExceptionBanco e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar transferência: " + e.getMessage());
-        } catch (ExceptionConta e) {
-            throw new ExceptionCaixaEletronico("Erro ao realizar transferência: " + e.getMessage());
+            banco.transferir(numeroOrigem, numeroDestino, valor);
+        } catch (ExceptionBanco | ExceptionConta e) {
+            throw new ExceptionCaixaEletronico("Erro ao transferir: " + e.getMessage());
         }
     }
 
     private void emitirExtrato() throws ExceptionCaixaEletronico {
         try {
             int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
-            System.out.println(this.banco.emitirExtrato(numero));
+            String extrato = banco.emitirExtrato(numero);
+            System.out.println(extrato);
         } catch (ExceptionBanco e) {
             throw new ExceptionCaixaEletronico("Erro ao emitir extrato: " + e.getMessage());
         }
@@ -122,9 +107,10 @@ public class CaixaEletronico {
     private void verSaldo() throws ExceptionCaixaEletronico {
         try {
             int numero = Integer.parseInt(lerValor("Digite o numero da conta: "));
-            System.out.println(this.banco.verSaldo(numero));
+            Double saldo = banco.verSaldo(numero);
+            System.out.println("Saldo da conta " + numero + ": " + saldo);
         } catch (ExceptionBanco e) {
-            throw new ExceptionCaixaEletronico("Erro ao verificar saldo: " + e.getMessage());
+            throw new ExceptionCaixaEletronico("Erro ao ver saldo: " + e.getMessage());
         }
     }
 }

@@ -7,79 +7,73 @@ import java.util.ArrayList;
 
 public class Banco {
 
-    int numero;
-    String nome;
-    ArrayList<ContaCorrente> contas;
+    private int numero;
+    private String nome;
+    private ArrayList<ContaCorrente> contas;
 
     public Banco(int numero, String nome) {
         this.numero = numero;
         this.nome = nome;
-        contas = new ArrayList<>();
+        this.contas = new ArrayList<>();
     }
 
     public void criarConta(double saldoInicial){
-        ContaCorrente conta = new ContaCorrente(contas.size()+1, saldoInicial);
+        ContaCorrente conta = new ContaCorrente(contas.size() + 1, saldoInicial);
         contas.add(conta);
     }
 
     public void criarConta(double saldoInicial, double limite) {
-        ContaCorrente conta = new ContaCorrente(contas.size()+1, saldoInicial, limite);
+        ContaCorrente conta = new ContaCorrente(contas.size() + 1, saldoInicial, limite);
         contas.add(conta);
     }
 
     public void depositar(int conta, double valor) throws ExceptionBanco, ExceptionConta {
-        ContaCorrente contaCorrente = this.localizarConta(conta);
+        ContaCorrente contaCorrente = localizarConta(conta);
         if (contaCorrente != null) {
             contaCorrente.depositar(valor);
-        }
-        else {
+        } else {
             throw new ExceptionBanco(ExceptionBanco.erroDeposito());
         }
     }
 
     public void sacar(int conta, double valor) throws ExceptionBanco, ExceptionConta {
-        ContaCorrente contaCorrente = this.localizarConta(conta);
+        ContaCorrente contaCorrente = localizarConta(conta);
         if (contaCorrente != null) {
             contaCorrente.sacar(valor);
-        }
-        else {
+        } else {
             throw new ExceptionBanco(ExceptionBanco.erroSaque());
         }
     }
 
     public String emitirExtrato(int conta) throws ExceptionBanco {
-        ContaCorrente contaCorrente = this.localizarConta(conta);
+        ContaCorrente contaCorrente = localizarConta(conta);
         if (contaCorrente != null) {
             return contaCorrente.emitirExtrato();
-        }
-        else {
+        } else {
             throw new ExceptionBanco(ExceptionBanco.erroExtrato());
         }
     }
 
     public void transferir(int contaOrigem, int contaDestino, double valor) throws ExceptionBanco, ExceptionConta {
-        ContaCorrente contaCorrenteOrigem = this.localizarConta(contaOrigem);
-        ContaCorrente contaCorrenteDestino = this.localizarConta(contaDestino);
+        ContaCorrente contaCorrenteOrigem = localizarConta(contaOrigem);
+        ContaCorrente contaCorrenteDestino = localizarConta(contaDestino);
         if (contaCorrenteOrigem != null && contaCorrenteDestino != null){
             if (contaCorrenteOrigem.getSaldo() >= valor) {
                 contaCorrenteOrigem.sacar(valor);
                 contaCorrenteDestino.depositar(valor);
-            }
-            else {
+            } else {
                 throw new ExceptionBanco(ExceptionBanco.erroSaldoInsuficiente());
             }
-        }
-        else {
+        } else {
             throw new ExceptionBanco(ExceptionBanco.erroTransferencia());
         }
     }
 
     public Double verSaldo(int conta) throws ExceptionBanco {
-        ContaCorrente contaCorrente = this.localizarConta(conta);
+        ContaCorrente contaCorrente = localizarConta(conta);
         if (contaCorrente != null) {
             return contaCorrente.getSaldo();
-        }
-        else {
+        } else {
             throw new ExceptionBanco(ExceptionBanco.erroSaldo());
         }
     }

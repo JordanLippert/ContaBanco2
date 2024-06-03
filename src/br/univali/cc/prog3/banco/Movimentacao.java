@@ -1,6 +1,5 @@
 package br.univali.cc.prog3.banco;
 
-
 public class Movimentacao {
     private String descricao;
     private char tipo;
@@ -13,6 +12,6 @@ public class Movimentacao {
     }
 
     public String getMovimentacao(){
-        return this.descricao+" ("+this.tipo+") R$ "+this.valor;
+        return this.descricao + " (" + this.tipo + ") R$ " + this.valor;
     }
 }

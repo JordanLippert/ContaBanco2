@@ -42,7 +42,6 @@ public class ContaCorrente {
     protected void depositar(double valor) throws ExceptionConta{
         if (valor > 0){
             this.saldo += valor;
-
             criarMovimentacao("Depósito", 'D', valor);
         }
         else{
